@@ -66,7 +66,7 @@ Return
 
 #If (!Minimize)    ; Если окно скрипта не свёрнуто. Условие для клавиш клавиатуры.
 
-#If (IsGuiScript || WinActive("ahk_id" hThisGui))
+#If (IsGuiScript || WinActive("ahk_id" hThisGui))    ; Запрет вывода меню.
 
 *+F10::
 *AppsKey:: Return
