@@ -36,12 +36,10 @@ If TrayIcon
 	Menu, Tray, Click, 1
 	Menu, Tray, NoStandard
 	Menu, Tray, Add, Min/Max, MinMax
-	Menu, Tray, Standard
 	Menu, Tray, Default, Min/Max
 	Menu, Tray, Disable, Min/Max
 	Gui, +Owner
 }
-Menu, Tray, NoStandard
 Menu, Tray, Add, ExitApp, GuiClose
 GoSub Init
 Gui, Margin, 0, 0
