@@ -167,17 +167,18 @@ ClipInsert(str)  {
 }
 
 ClipManSelect()  {
+	Static tClipboardAll
 	If (oNode.Id = "ClipMan")
 		Return
+	SetTimer, ClipInsert, -50
 	ClipInsert := 0
 	tClipboardAll := ClipboardAll
-	Clipboard := Clips[oNode.Id][1]
+	Clipboard := Clips[oNode.Id][1] 
 	Send("^{vk56}")
-	Clipboard := tClipboardAll
-	SetTimer, ClipInsert, -50
 	Return
 
 	ClipInsert:
+		Clipboard := tClipboardAll
 		ClipInsert := 1, MouseDrag(2, 2)
 		Return
 }
