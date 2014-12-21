@@ -135,9 +135,8 @@ Return
 	; _________________________________________________ ClipMan _________________________________________________
 
 OnClipboardChange:
-	If (!ClipInsert || A_EventInfo != 1)
-		Return
-	ClipInsert(Clipboard)
+	If (ClipInsert && A_EventInfo = 1)
+		ClipInsert(Clipboard)
 	Return
 
 ClipManShow()  {
