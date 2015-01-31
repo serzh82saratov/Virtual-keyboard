@@ -58,7 +58,7 @@ ComObjError(false), Layout(Bank)
 WinGetPos, X, Y, W, , ahk_class Shell_TrayWnd ahk_exe explorer.exe
 Gui, Show, % "NA x" (X+W)-(hKey*9)-28 " y" Y - (hKey * 4) - hCap - 2 " w" hKey*9+2, Virtual mini keyboard
 SetTimer, OnTop, 500
-ClipInsert := 1, (Clipboard = "" ? 0 : ClipInsert(Clipboard))
+(Clipboard = "" ? 0 : ClipInsert(Clipboard)), ClipInsert := 1
 OnMessage(0xC, "WM_SETTEXT")
 Return
 
@@ -169,15 +169,16 @@ ClipManSelect()  {
 	Static tClipboardAll
 	If (oNode.Id = "ClipMan")
 		Return
-	SetTimer, ClipInsert, -50
 	ClipInsert := 0
 	tClipboardAll := ClipboardAll
-	Clipboard := Clips[oNode.Id][1] 
+	Clipboard := Clips[oNode.Id][1]
 	Send("^{vk56}")
+	SetTimer, ClipInsert, -50
 	Return
 
 	ClipInsert:
 		Clipboard := tClipboardAll
+		Sleep 50
 		ClipInsert := 1, MouseDrag(2, 2)
 		Return
 }
@@ -187,7 +188,7 @@ ClipTip()  {
 		Return
 	SetTimer, OnTop, Off
 	str := Clips[oNode.Id][1]
-	ToolTip % SubStr(str, 1, 1000) . (StrLen(str) > 1000 ? "`n. . . . . . . . ." : "")
+	ToolTip % SubStr(str, 1, 1000) . (StrLen(str) > 1000 ? ". . . . . . . . ." : "")
 	KeyWait RButton
 	ToolTip
 	SetTimer, OnTop, 500
