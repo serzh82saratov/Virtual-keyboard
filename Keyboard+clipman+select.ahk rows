@@ -194,6 +194,8 @@ ClipTip()  {
 		Return
 	SetTimer, OnTop, Off
 	text := Clips[oNode.Id][1], str := SubStr(text, 1, 1500)
+	StringReplace, str, str, `r`n, `n, 1
+	StringReplace, str, str, `r, `n, 1
 	i := 0, Rows := StrSplit(str, "`n")
 	Transform, str, HTML, %str%, 3
 	StringReplace, str, str, % A_Tab, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, 1
