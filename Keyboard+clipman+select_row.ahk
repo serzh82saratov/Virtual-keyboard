@@ -207,8 +207,8 @@ ClipTip()  {
 	pbrt := e.getBoundingClientRect()
 	w := pbrt.right-pbrt.left, h := pbrt.bottom-pbrt.top
 	CalculatePopupWindowPosition(x, y, w, h, 20)
-	WinMove, ahk_id %hTip%, , 0, 0, w, h
 	Gui, Tip: Show, % "NA x" x " y" y " w" w " h" h
+	WinMove, ahk_id %hTip%, , 0, 0, w, h
 	KeyWait RButton
 	Gui, Tip: Show, Hide
 	SetTimer, OnTop, 500
