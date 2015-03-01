@@ -1,5 +1,5 @@
 
-	;   Виртуальная 10-ти "клавишная" клавиатура + менеджер буфера обмена + разбивка строк
+	;   Виртуальная 10-ти "клавишная" клавиатура + менеджер буфера обмена
 	;   Автор - serzh82saratov
 	;   http://forum.script-coding.com/viewtopic.php?pid=88583#p88583
 
@@ -42,12 +42,6 @@ If TrayIcon
 }
 Menu, Tray, Add, ExitApp, GuiClose
 GoSub Init
-Gui, Tip: Margin, 0, 0
-Gui, Tip: Color, %cBg%
-Gui, Tip: -DPIScale -Caption +Lastfound +AlwaysOnTop +Owner +HWNDhGuiTip
-Gui, Tip: Add, ActiveX, voDocTip HWNDhTip, HTMLFile
-oDocTip.body.innerHTML := htmltip
-WinSet, Transparent, 235
 Gui, Margin, 0, 0
 Gui, Color, %cBg%
 Gui, -DPIScale -Caption +Lastfound +AlwaysOnTop +HWNDhThisGui
@@ -119,7 +113,7 @@ Return
 
 *LButton::
 	If (GetKeyState("RButton", "P"))
-		(Area = "ClipMan" ? ClipManClean() : Area = "ClipTip" ? ClipManSelect() : EmbBank())
+		(Area = "ClipMan" ? ClipManClean() : EmbBank())
 	Else If Area is number
 		NextChr(Area)
 	Else If Area = Del
@@ -177,7 +171,7 @@ ClipManSelect()  {
 		Return
 	ClipInsert := 0
 	tClipboardAll := ClipboardAll
-	Clipboard := (Area = "ClipTip" ? ClipsTip[oNode.Id] : Clips[oNode.Id][1])
+	Clipboard := Clips[oNode.Id][1]
 	Send("^{vk56}")
 	SetTimer, ClipInsert, -50
 	Return
@@ -193,24 +187,10 @@ ClipTip()  {
 	If (oNode.Id = "ClipMan")
 		Return
 	SetTimer, OnTop, Off
-	text := Clips[oNode.Id][1], str := SubStr(text, 1, 1500)
-	StringReplace, str, str, `r`n, `n, 1
-	StringReplace, str, str, `r, `n, 1
-	i := 0, Rows := StrSplit(str, "`n")
-	Transform, str, HTML, %str%, 3
-	StringReplace, str, str, % A_Tab, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, 1
-	Loop, parse, str, `n
-		html .= "<a href='' id='" ++i "'><div name='ClipTip' id='" i "'>" (IsSpace(A_LoopField) ? "<br>" : A_LoopField) "</div></a>"
-		, ClipsTip[i] := Rows[i]
-	html .= (StrLen(text) > 1500 ? "<div name='ClipTip'>. . . . . . . . . . . . . .</div>" : "")
-	(e := oDocTip.getElementById("ClipTip")).innerHTML := html
-	pbrt := e.getBoundingClientRect()
-	w := pbrt.right-pbrt.left, h := pbrt.bottom-pbrt.top
-	CalculatePopupWindowPosition(x, y, w, h, 20)
-	WinMove, ahk_id %hTip%, , 0, 0, w, h
-	Gui, Tip: Show, % "NA x" x " y" y " w" w " h" h
+	str := Clips[oNode.Id][1]
+	ToolTip % SubStr(str, 1, 1000) . (StrLen(str) > 1000 ? ". . . . . . . . ." : "")
 	KeyWait RButton
-	Gui, Tip: Show, Hide
+	ToolTip
 	SetTimer, OnTop, 500
 }
 
@@ -323,35 +303,6 @@ ClickKey()  {
 		Return
 }
 
-CalculatePopupWindowPosition(byref left, byref top, w, h, offset = 0, x = "", y = "")  {
-    VarSetCapacity(POINT, 8, 0), VarSetCapacity(structs, 24, 0)
-    If (x = "" || y = "")
-        DllCall("GetCursorPos", "ptr", &POINT)
-    Else
-        NumPut(x, POINT, 0, "int"), NumPut(y, POINT, 4, "int")
-    NumPut(w + offset, structs, 0, "int"), NumPut(h + offset, structs, 4, "int") ; SIZE
-    Loop 2
-    {
-        If !DllCall("CalculatePopupWindowPosition"
-            , "ptr", &POINT
-            , "ptr", &structs
-            , "int", [0, 0x0008][A_Index]
-            , "ptr", 0
-            , "ptr", &structs + 8)
-            Return 0
-        _left := NumGet(structs, 8, "int"), _top := NumGet(structs, 12, "int")
-        If !(_left < NumGet(POINT, 0, "int") && _top < NumGet(POINT, 4, "int")  && (out := 1))
-            Break
-    }
-    left := _left + (out ? 0 : offset), top := _top + (out ? 0 : offset)
-    Return 1
-}
-
-IsSpace(var)  {
-	if var is space
-		Return 1
-}
-
 	; Для управления сообщениями: SendMessage, 0xC, 3, "NextChr", , Virtual mini keyboard ahk_class AutoHotkeyGUI
 
 WM_SETTEXT(wp, lp) {
@@ -360,18 +311,15 @@ WM_SETTEXT(wp, lp) {
 
 	; _________________________________________________ Window _________________________________________________
 
-WM_MOUSEMOVE(wp, lp, msg, hwnd) {
-	Doc := A_GuiControl = "oDocTip" ? "oDocTip" : "oDoc"
-	Area := (oNode := %Doc%.elementFromPoint(lp & 0xFFFF, lp >> 16)).name
-	If Doc = oDocTip
-		Area = ClipTip
+WM_MOUSEMOVE(wp, lp) {
+	Area := (oNode := oDoc.elementFromPoint(lp & 0xFFFF, lp >> 16)).name
 	PrArea = Area ? 0 : (PrArea := Area)
 	SetTimer, IsThisGui, -30
 }
 
 IsThisGui:
 	MouseGetPos, , , WinID
-	If ((hThisGui = WinID || hGuiTip = WinID) && (IsGuiScript := 1))
+	If (hThisGui = WinID && (IsGuiScript := 1))
 		SetTimer, IsThisGui, -50
 	Else
 		Area := PrArea := Chr.P := "", IsGuiScript := 0
@@ -439,8 +387,8 @@ GuiEscape:
 	; _________________________________________________ Init _________________________________________________
 
 Init:
-	Global hThisGui, hTip, oDoc, oDocTip, Area, PrArea, PrBank, Caps, ViewInput, ClipManShow, ClipInsert, oNode
-	, hGuiTip, Chr := {}, Ins := {}, Type := {}, Clips := [], ClipsTip := []
+	Global hThisGui, oDoc, Area, PrArea, PrBank, Caps, ViewInput, ClipManShow, ClipInsert, oNode
+	, Chr := {}, Ins := {}, Type := {}, Clips := []
 	, Bank_Num := [[1],[2],[3],[4],[5],[6],[7],[8],[9],[0]]
 	, Bank_Chr_1 := ["&rarr;",".","`,","!","?","""","`%"]
 	, Bank_Chr_10 := ["&crarr;","+","-","*",":","(",")","|"]
@@ -509,7 +457,7 @@ Init:
 		text-overflow: 'ellipsis';
 		font-size: '" hKey/4.25 "px';
 		font-family: 'Arial';
-		color: '#" cSel "';
+		color: '#" cChr "';
 		cursor: 'default';
 		scrollbar-track-color: '#" cBG "';
 		scrollbar-3dlight-color: '#" cBG "';
@@ -522,8 +470,8 @@ Init:
 		left: " wKey*3+2 "px;
 		top: 0px;
 	}
-	a {display: block; text-decoration: none; color: '#" cSel "';}
-	a:hover {background-color: '#" cCtrl "'; color: '#" cChr "';}
+	a {display: block; text-decoration: none; color: '#" cChr "';}
+	a:hover {background-color: '#" cCtrl "';}
 	#Del {background-color: '#D9952F'; left: 0px;}
 	#Ret {background-color: '#FFFF00'; left: " hCap//0.6 "px;}
 	#Emb {background-color: '#44AD24'; left: " (hCap//0.6)*2 "px;}
@@ -546,31 +494,6 @@ Init:
 		color: '#" cSel "';
 		padding-top: '0.2em';
 	}
-	</style>
-	)"
-
-	htmltip := "
-	(
-	<body name='ClipTip' onselectstart='return false' oncontextmenu='return false'>
-	<pre name='ClipTip' id='ClipTip'></pre>
-	</body>
-
-	<style>
-	body {
-		background-color: '#" cBg "';
-		overflow: 'hidden';
-	}
-	#ClipTip {
-		font-size: '" hKey/4.25 "px';
-		font-family: 'Arial';
-		color: '#" cSel "';
-		position: 'absolute';
-		left: " 0 "px;
-		top: 0px;
-
-	}
-	a {display: block; text-decoration: none; color: '#" cSel "';}
-	a:hover {background-color: '#" cCtrl "'; color: '#" cChr "';}
 	</style>
 	)"
 
