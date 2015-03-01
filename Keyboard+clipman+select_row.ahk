@@ -119,7 +119,7 @@ Return
 
 *LButton::
 	If (GetKeyState("RButton", "P"))
-		(Area = "ClipMan" ? ClipManClean() : Area = "ClipTip" ? ClipManSelect() : EmbBank())
+		(Area = "ClipTip" ? ClipManSelect() : Area != "ClipMan" ? EmbBank() : 0)
 	Else If Area is number
 		NextChr(Area)
 	Else If Area = Del
