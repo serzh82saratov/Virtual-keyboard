@@ -559,6 +559,7 @@ Init:
 	body {
 		background-color: '#" cBg "';
 		overflow: 'hidden';
+		white-space: 'pre';
 	}
 	#ClipTip {
 		font-size: '" hKey/4.25 "px';
