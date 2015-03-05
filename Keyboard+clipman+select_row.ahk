@@ -196,12 +196,12 @@ ClipTip()  {
 	text := Clips[oNode.Id][1], str := SubStr(text, 1, 1500)
 	StringReplace, str, str, `r`n, `n, 1
 	StringReplace, str, str, `r, `n, 1
-	i := 0, Rows := StrSplit(str, "`n")
+	i := 0, ClipsTip := StrSplit(str, "`n")
 	Transform, str, HTML, %str%, 3
-	StringReplace, str, str, % A_Tab, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, 1
+	StringReplace, str, str, %A_Tab%, &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;, 1
+	StringReplace, str, str, %A_Space%, &nbsp;, 1
 	Loop, parse, str, `n
 		html .= "<a href='' id='" ++i "'><div name='ClipTip' id='" i "'>" (IsSpace(A_LoopField) ? "<br>" : A_LoopField) "</div></a>"
-		, ClipsTip[i] := Rows[i]
 	html .= (StrLen(text) > 1500 ? "<div name='ClipTip'>. . . . . . . . . . . . . .</div>" : "")
 	(e := oDocTip.getElementById("ClipTip")).innerHTML := html
 	pbrt := e.getBoundingClientRect()
@@ -559,9 +559,9 @@ Init:
 	body {
 		background-color: '#" cBg "';
 		overflow: 'hidden';
-		white-space: 'pre';
 	}
 	#ClipTip {
+		white-space: 'pre';
 		font-size: '" hKey/4.25 "px';
 		font-family: 'Arial';
 		color: '#" cSel "';
