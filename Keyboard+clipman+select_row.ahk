@@ -212,6 +212,7 @@ ClipTip()  {
 	KeyWait RButton
 	Gui, Tip: Show, Hide
 	SetTimer, OnTop, 500
+	MouseDrag()
 }
 
 ClipManClean()  {
