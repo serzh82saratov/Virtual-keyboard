@@ -1,6 +1,6 @@
 
 	;   Виртуальная 10-ти "клавишная" клавиатура + менеджер буфера обмена + разбивка строк
-	;   Автор - serzh82saratov
+	;   Автор - serzh82saratov 
 	;   http://forum.script-coding.com/viewtopic.php?pid=88135#p88135
 
 #UseHook
