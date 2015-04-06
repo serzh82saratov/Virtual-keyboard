@@ -81,7 +81,7 @@ Return
 
 *WheelDown::
 	If (GetKeyState("RButton", "P"))
-		(Area = "Caption" ? Send("{Left}") : Send("^+{Left}"))
+		(Area = "ClipTip" || Area = "ClipMan" ? Send("{Tab}") : Area = "Caption" ? Send("{Left}") : Send("^+{Left}"))
 	Else If Area is number
 		K_ChangeBank()
 	Else If Area = ClipMan
@@ -90,7 +90,7 @@ Return
 
 *WheelUp::
 	If (GetKeyState("RButton", "P"))
-		(Area = "Caption" ? Send("{Right}") : Send("^+{Right}"))
+		(Area = "ClipTip" || Area = "ClipMan" ? Send("+{Tab}") : Area = "Caption" ? Send("{Right}") : Send("^+{Right}"))
 	Else If Area is number
 		NextChr(Area)
 	Else If Area = ClipMan
@@ -558,7 +558,7 @@ Init:
 
 	<style>
 	body {
-		background-color: '#365DC0';
+		background-color: '#2742A2';
 		overflow: 'hidden';
 	}
 	#ClipTip {
