@@ -2,7 +2,7 @@
 	;   Виртуальная 10-ти "клавишная" клавиатура + менеджер буфера обмена + разбивка строк
 	;   Автор - serzh82saratov
 	;   http://forum.script-coding.com/viewtopic.php?pid=88135#p88135
-
+						
 #UseHook
 #SingleInstance Force
 #NoTrayIcon
@@ -15,7 +15,7 @@ OnExit GuiClose
 FixIE(0)
 
 Global Relative := 1.0		; Относительный размер клавиатуры. Например: "1.2" = +20%
-, Bank := "bRu"				; Стартовая раскладка  -  sRu | bRu | sEn | bEn | Emb | Num
+, Bank := "Num"				; Стартовая раскладка  -  sRu | bRu | sEn | bEn | Emb | Num
 , TimeOut := 1500			; Таймаут авто ввода символа после последнего выбора
 , TrayIcon := 1				; Иконка только в трее, или только на панели задач
 , AutoRegistr := 1			; Переключать в нижний регистр, после ввода символа из верхнего
@@ -24,7 +24,7 @@ Global Relative := 1.0		; Относительный размер клавиат
 , sBorder := 1				; Толщина окантовки клавиш
 , cChr := "000000"			; Цвет шрифта
 , cSel := "ffffff"			; Цвет шрифта выбранного символа
-, cCtrl := "D9952F"			; Цвет шрифта кнопок "Ctrl+..."
+, cCtrl := "E1AA59"			; Цвет шрифта кнопок "Ctrl+..."
 , wKey := 130 * Relative
 , hKey := wKey//2
 , hCap := hKey//3
@@ -67,13 +67,14 @@ Gui, Show, % "NA x" (X+W)-(hKey*9)-28 " y" Y - (hKey * 4) - hCap - 2 " w" hKey*9
 SetTimer, OnTop, 500
 (Clipboard = "" ? 0 : ClipInsert(Clipboard)), ClipInsert := 1
 OnMessage(0xC, "WM_SETTEXT")
+ClipManShow()
 Return
 
 	; _________________________________________________ HotKey _________________________________________________
 
-#If (!Minimize)    ; Если окно скрипта не свёрнуто. Условие для клавиш клавиатуры.
+#If (!Minimize)		; Если окно скрипта не свёрнуто. Условие для клавиш клавиатуры.
 
-#If (IsGuiScript || WinActive("ahk_id" hThisGui))    ; Запрет вывода меню.
+#If (IsGuiScript || WinActive("ahk_id" hThisGui))		; Запрет вывода меню.
 
 *+F10::
 *AppsKey:: Return
@@ -82,16 +83,16 @@ Return
 
 *WheelDown::
 	If (GetKeyState("RButton", "P"))
-		(Area = "ClipTip" || Area = "ClipMan" ? Send("{Tab}") : Area = "Caption" ? Send("{Left}") : Send("^+{Left}"))
+		(Area = "ClipTip" || Area = "ClipMan" ? Send("{Tab}") : Area = "Caption" ? Send("{Right}") : Send("^+{Right}"))
 	Else If Area is number
 		K_ChangeBank()
 	Else If Area = ClipMan
 		t := (e := oDoc.getElementById("ClipMan")).scrollTop, e.scrollTop := t+hKey, MouseDrag()
 	Return
-
+	
 *WheelUp::
 	If (GetKeyState("RButton", "P"))
-		(Area = "ClipTip" || Area = "ClipMan" ? Send("+{Tab}") : Area = "Caption" ? Send("{Right}") : Send("^+{Right}"))
+		(Area = "ClipTip" || Area = "ClipMan" ? Send("+{Tab}") : Area = "Caption" ? Send("{Left}") : Send("^+{Left}"))
 	Else If Area is number
 		NextChr(Area)
 	Else If Area = ClipMan
@@ -233,7 +234,7 @@ ClipManDelItem()  {
 
 TransformHTML(str)  {
 	Transform, str, HTML, %str%, 3
-	StringReplace, str, str, <br>, &→, 1
+	StringReplace, str, str, <br>, &crarr;, 1
 	StringReplace, str, str, %A_Space%, &rarr;, 1
 	StringReplace, str, str, %A_Tab%, &harr;, 1
 	Return str
@@ -559,7 +560,7 @@ Init:
 
 	<style>
 	body {
-		background-color: '#2742A2';
+		background-color: '#4F68B6';
 		overflow: 'hidden';
 	}
 	#ClipTip {
@@ -588,4 +589,3 @@ Init:
 				: t = "E" ? (c > 6 ? "ctrl" : "emb") : "num"
 		}
 	Return
-→
