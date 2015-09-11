@@ -8,6 +8,7 @@
 #NoTrayIcon
 #NoEnv
 #HotkeyInterval 0
+#InputLevel 1
 SetBatchLines -1
 ListLines Off
 OnExit GuiClose
@@ -232,7 +233,7 @@ ClipManDelItem()  {
 
 TransformHTML(str)  {
 	Transform, str, HTML, %str%, 3
-	StringReplace, str, str, <br>, &crarr;, 1
+	StringReplace, str, str, <br>, &→, 1
 	StringReplace, str, str, %A_Space%, &rarr;, 1
 	StringReplace, str, str, %A_Tab%, &harr;, 1
 	Return str
@@ -587,3 +588,4 @@ Init:
 				: t = "E" ? (c > 6 ? "ctrl" : "emb") : "num"
 		}
 	Return
+→
