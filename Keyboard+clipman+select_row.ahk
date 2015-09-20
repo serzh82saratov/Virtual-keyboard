@@ -2,7 +2,7 @@
 	;   Виртуальная 10-ти "клавишная" клавиатура + менеджер буфера обмена + разбивка строк
 	;   Автор - serzh82saratov
 	;   http://forum.script-coding.com/viewtopic.php?pid=88135#p88135
-						
+
 #UseHook
 #SingleInstance Force
 #NoTrayIcon
@@ -24,7 +24,7 @@ Global Relative := 1.0		; Относительный размер клавиат
 , sBorder := 1				; Толщина окантовки клавиш
 , cChr := "000000"			; Цвет шрифта
 , cSel := "ffffff"			; Цвет шрифта выбранного символа
-, cCtrl := "E1AA59"			; Цвет шрифта кнопок "Ctrl+..."
+, cCtrl := "DACB51"			; Цвет шрифта кнопок "Ctrl+..."
 , wKey := 130 * Relative
 , hKey := wKey//2
 , hCap := hKey//3
@@ -89,7 +89,7 @@ Return
 	Else If Area = ClipMan
 		t := (e := oDoc.getElementById("ClipMan")).scrollTop, e.scrollTop := t+hKey, MouseDrag()
 	Return
-	
+
 *WheelUp::
 	If (GetKeyState("RButton", "P"))
 		(Area = "ClipTip" || Area = "ClipMan" ? Send("+{Tab}") : Area = "Caption" ? Send("{Left}") : Send("^+{Left}"))
